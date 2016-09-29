@@ -19,7 +19,7 @@ public class MMOClientApp {
 		int port = 10001;
 		try {
 			InetAddress ia = InetAddress.getByName(host);
-			final DatagramSocket socket = new DatagramSocket(10003);
+			final DatagramSocket socket = new DatagramSocket(10006);
 
 			socket.connect(ia, port);
 			send301Data(socket);
