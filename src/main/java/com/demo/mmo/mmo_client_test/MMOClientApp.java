@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import com.demo.mmo.mmo_entity.game.entity.net.Fight.CS_301;
+import com.demo.mmo.mmo_entity.game.entity.net.Fight.CS_302;
 import com.demo.mmo.mmo_entity.game.entity.net.base.Protocal.Response;
 
 /**
@@ -18,15 +19,40 @@ public class MMOClientApp {
 		int port = 10001;
 		try {
 			InetAddress ia = InetAddress.getByName(host);
-			DatagramSocket socket = new DatagramSocket(10003);
-			
+			final DatagramSocket socket = new DatagramSocket(10003);
+
 			socket.connect(ia, port);
-			
 			send301Data(socket);
-			
+			Thread.sleep(2000);
+			Thread t = new Thread(new Runnable() {
+
+				public void run() {
+					while (true)
+						receive(socket);
+				}
+			});
+			Thread t2 = new Thread(new Runnable() {
+
+				public void run() {
+					// TODO Auto-generated method stub
+					while (true) {
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						send302Data(socket);
+					}
+				}
+
+			});
+			t2.start();
+			t.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	private static void send301Data(DatagramSocket socket) {
@@ -34,8 +60,14 @@ public class MMOClientApp {
 				.setData(CS_301.newBuilder().build().toByteString());
 
 		send(socket, resp);
-		while(true)
-			receive(socket);
+
+	}
+
+	private static void send302Data(DatagramSocket socket) {
+		Response.Builder resp = Response.newBuilder().setProtocal(302)
+				.setData(CS_302.newBuilder().setX(3.0f).setY(4.0f).build().toByteString());
+
+		send(socket, resp);
 	}
 
 	public static void send(DatagramSocket socket, Response.Builder response) {
@@ -50,13 +82,13 @@ public class MMOClientApp {
 		StringBuilder sb = new StringBuilder();
 		for (int j = 0; j < data.length; j++, i++) {
 			buffer[i] = data[j];
-			
+
 		}
-		for(int k=0;k<buffer.length;k++){
+		for (int k = 0; k < buffer.length; k++) {
 			System.out.print(buffer[k]);
 			System.out.print(" ");
 		}
-		
+
 		DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
 		System.out.println(dp.getLength());
 		try {
@@ -66,9 +98,9 @@ public class MMOClientApp {
 			e.printStackTrace();
 		}
 	}
-	
-	public static byte[] receive(DatagramSocket socket){
-		
+
+	public static byte[] receive(DatagramSocket socket) {
+
 		DatagramPacket dp1 = new DatagramPacket(new byte[22312], 22312);
 		try {
 			socket.receive(dp1);
@@ -92,7 +124,5 @@ public class MMOClientApp {
 		t[3] = (byte) (res >>> 24);// 最高位,无符号右移。
 		return t;
 	}
-	
-	
 
 }
