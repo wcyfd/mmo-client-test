@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
+import com.demo.mmo.mmo_client_test.net.ClientHandler;
+import com.demo.mmo.mmo_client_test.net.WanClient;
 import com.demo.mmo.mmo_entity.game.entity.net.Fight.CS_301;
 import com.demo.mmo.mmo_entity.game.entity.net.Fight.CS_302;
 import com.demo.mmo.mmo_entity.game.entity.net.base.Protocal.Response;
@@ -14,12 +17,19 @@ import com.demo.mmo.mmo_entity.game.entity.net.base.Protocal.Response;
  *
  */
 public class MMOClientApp {
-	public static void main(String[] args) {
+	public static void main(String[] args) {	
+		WanClient client = new WanClient();
+		client.startIOClient(new ClientHandler(), new InetSocketAddress("10.0.51.100", 10001));
+	}
+	
+	
+	
+	public static void start(int i ){
 		String host = "10.0.51.100";
 		int port = 10001;
 		try {
 			InetAddress ia = InetAddress.getByName(host);
-			final DatagramSocket socket = new DatagramSocket(10006);
+			final DatagramSocket socket = new DatagramSocket(i);
 
 			socket.connect(ia, port);
 			send301Data(socket);
@@ -52,7 +62,6 @@ public class MMOClientApp {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private static void send301Data(DatagramSocket socket) {
