@@ -1,44 +1,33 @@
 package com.demo.mmo.mmo_client_test.net;
 
-import org.apache.mina.core.service.IoHandler;
-import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 
-public class ClientHandler implements IoHandler {
+import com.demo.mmo.mmo_entity.game.entity.net.Fight.FightInfo;
+import com.demo.mmo.mmo_entity.game.entity.net.Fight.SC_302;
+import com.demo.mmo.mmo_entity.game.entity.net.Fight.SC_303;
+import com.demo.mmo.mmo_entity.game.entity.net.base.Protocal.Request;
+import com.google.protobuf.ByteString;
 
-	@Override
-	public void sessionCreated(IoSession iosession) throws Exception {
-		System.out.println("sessionCreated");
-	}
-
-	@Override
-	public void sessionOpened(IoSession iosession) throws Exception {
-		System.out.println("sessionOpened");
-	}
-
-	@Override
-	public void sessionClosed(IoSession iosession) throws Exception {
-		System.out.println("sessionClosed");
-	}
-
-	@Override
-	public void sessionIdle(IoSession iosession, IdleStatus idlestatus) throws Exception {
-		System.out.println("sessionIdle");
-	}
-
-	@Override
-	public void exceptionCaught(IoSession iosession, Throwable throwable) throws Exception {
-		System.out.println("exceptionCaught");
-	}
-
+public class ClientHandler extends IoHandlerAdapter{
 	@Override
 	public void messageReceived(IoSession iosession, Object obj) throws Exception {
-		System.out.println("messageReceived");
+		// TODO Auto-generated method stub
+		super.messageReceived(iosession, obj);
+		
+		Request request = (Request)obj;
+		int protocal =request.getProtocal();
+		ByteString data = request.getData();
+		if(protocal == 20303){
+			SC_303 sc303 = SC_303.parseFrom(data);
+			FightInfo fightInfo = sc303.getFightInfo();
+			System.out.println(fightInfo.getTime());
+			
+			
+		}
 	}
-
+	
 	@Override
 	public void messageSent(IoSession iosession, Object obj) throws Exception {
-		System.out.println("messageSent");
+		super.messageSent(iosession, obj);
 	}
-
 }

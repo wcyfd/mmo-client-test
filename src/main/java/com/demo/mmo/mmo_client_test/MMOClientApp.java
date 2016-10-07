@@ -6,8 +6,14 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import org.apache.mina.core.future.ConnectFuture;
+import org.apache.mina.core.future.IoFutureListener;
+import org.apache.mina.core.session.IoSession;
+
 import com.demo.mmo.mmo_client_test.net.ClientHandler;
-import com.demo.mmo.mmo_client_test.net.WanClient;
+import com.demo.mmo.mmo_client_test.net.IoHandlerAdapter;
+import com.demo.mmo.mmo_client_test.net.MemMonClient;
+import com.demo.mmo.mmo_client_test.net.UDPClient;
 import com.demo.mmo.mmo_entity.game.entity.net.Fight.CS_301;
 import com.demo.mmo.mmo_entity.game.entity.net.Fight.CS_302;
 import com.demo.mmo.mmo_entity.game.entity.net.base.Protocal.Response;
@@ -18,8 +24,9 @@ import com.demo.mmo.mmo_entity.game.entity.net.base.Protocal.Response;
  */
 public class MMOClientApp {
 	public static void main(String[] args) {	
-		WanClient client = new WanClient();
-		client.startIOClient(new ClientHandler(), new InetSocketAddress("10.0.51.100", 10001));
+		new UDPClient().connect(new InetSocketAddress("localhost", 10001),new ClientHandler());
+//		new MemMonClient();
+//		client.startIOClient(new ClientHandler(), new InetSocketAddress("10.0.51.100", 10001));
 	}
 	
 	
