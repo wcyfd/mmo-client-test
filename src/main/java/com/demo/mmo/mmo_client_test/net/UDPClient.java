@@ -21,39 +21,35 @@ import com.google.protobuf.ByteString;
 public class UDPClient {
 
 	private IoConnector connector;
-	
-	
 
 	public UDPClient() {
 		connector = new NioDatagramConnector();
 		connector.getFilterChain().addLast("codec",
 				new ProtocolCodecFilter(new MessageCodecFactory(Charset.forName("UTF-8"))));
-		
-		
-		
+
 	}
 
-	public void connect( InetSocketAddress address,IoHandler handler) {
+	public void connect(InetSocketAddress address, IoHandler handler) {
 		connector.setHandler(handler);
 		ConnectFuture connFuture = connector.connect(address);
 		connFuture.awaitUninterruptibly();
-		connFuture.addListener(new IoFutureListener<ConnectFuture>(){
+		connFuture.addListener(new IoFutureListener<ConnectFuture>() {
 
 			@Override
 			public void operationComplete(ConnectFuture future) {
 				// TODO Auto-generated method stub
 				System.out.println(future.isConnected());
-				
+
 				Response.Builder resp = Response.newBuilder().setProtocal(301)
 						.setData(CS_301.newBuilder().build().toByteString());
 				IoSession session = future.getSession();
 				session.write(resp);
 			}
-			
+
 		});
 	}
-	
-	public void connect(){
+
+	public void connect() {
 	}
 
 }
